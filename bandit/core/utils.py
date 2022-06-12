@@ -22,9 +22,7 @@ def get_module_qualname_from_path(path):
     :return: fully qualified module name
     """
 
-    info = f"\n>>> ARGUMENT: {path}\n"
     (head, tail) = os.path.split(path)
-    info += f">>> head: {head}, tail: {tail}\n"
     if head == "" or tail == "":
         raise InvalidModulePath(
             'Invalid python file path: "%s"'
@@ -33,15 +31,11 @@ def get_module_qualname_from_path(path):
 
     qname = [os.path.splitext(tail)[0]]
     while head not in ["/", ".", ""]:
-        info += f'>>>>>> __init__.py exists in head: {os.path.isfile(os.path.join(head, "__init__.py"))}\n'
         if os.path.isfile(os.path.join(head, "__init__.py")):
             (head, tail) = os.path.split(head)
             qname.insert(0, tail)
-            info += f">>>>>> head: {head}, tail: {tail}, qname: {qname}\n"
         else:
             break
 
     qualname = ".".join(qname)
-    info += f">>> RETURN VALUE: {qualname}\n\n"
-    print(info)
     return qualname
