@@ -143,6 +143,13 @@ class UtilTests(testtools.TestCase):
 
     def test_get_module_qualname_from_path_rel_typical(self):
         """Test get_module_qualname_from_path with typical relative paths."""
+        for path in (
+            os.path.join(self.reltempdir, "good", "__init__.py"),
+            os.path.join(self.reltempdir, "good", "a", "__init__.py"),
+            os.path.join(self.reltempdir, "good", "a", "b", "__init__.py"),
+            os.path.join(self.reltempdir, "good", "a", "b", "c", "__init__.py"),
+        ):
+            self.assertTrue(os.path.exists(path), path)
 
         name = b_utils.get_module_qualname_from_path(
             os.path.join(
@@ -154,6 +161,11 @@ class UtilTests(testtools.TestCase):
     def test_get_module_qualname_from_path_rel_missingmid(self):
         # Test get_module_qualname_from_path with module __init__.py
         # missing and relative paths
+        for path in (
+            os.path.join(self.reltempdir, "missingmid", "a", "b", "__init__.py"),
+            os.path.join(self.reltempdir, "missingmid", "a", "b", "c", "__init__.py"),
+        ):
+            self.assertTrue(os.path.exists(path), path)
 
         name = b_utils.get_module_qualname_from_path(
             os.path.join(
@@ -185,6 +197,13 @@ class UtilTests(testtools.TestCase):
 
     def test_get_module_qualname_from_path_rel_syms(self):
         """Test get_module_qualname_from_path with symbolic relative paths."""
+        for path in (
+            os.path.join(self.reltempdir, "syms", "__init__.py"),
+            os.path.join(self.reltempdir, "syms", "a", "__init__.py"),
+            os.path.join(self.reltempdir, "syms", "a", "bsym", "__init__.py"),
+            os.path.join(self.reltempdir, "syms", "a", "bsym", "c", "__init__.py"),
+        ):
+            self.assertTrue(os.path.exists(path), path)
 
         name = b_utils.get_module_qualname_from_path(
             os.path.join(
