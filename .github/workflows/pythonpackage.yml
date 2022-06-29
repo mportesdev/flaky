@@ -2,6 +2,8 @@ name: Build and Test Bandit
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '57 * * * *'
 
 jobs:
   tests:

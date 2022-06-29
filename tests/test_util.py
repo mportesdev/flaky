@@ -1,6 +1,7 @@
 import os
 import shutil
 import tempfile
+from pathlib import Path
 
 import testtools
 
@@ -9,7 +10,7 @@ from bandit.core import utils as b_utils
 
 def _touch(path):
     """Create an empty file at ``path``."""
-    open(path, "w").close()
+    Path(path).touch()
 
 
 class UtilTests(testtools.TestCase):
