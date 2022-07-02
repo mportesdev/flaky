@@ -24,35 +24,33 @@ class UtilTests(testtools.TestCase):
         no __init__.py anywhere in path, symlinking .py files.
         """
 
-        self.tempdir = tempfile.mkdtemp()
+        self.tempdir = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.tempdir)
         self.reltempdir = os.path.relpath(self.tempdir)
 
         # good/a/b/c/test_typical.py
-        os.makedirs(os.path.join(self.tempdir, "good", "a", "b", "c"), 0o755)
-        (Path(self.tempdir) / "good" / "__init__.py").touch()
-        (Path(self.tempdir) / "good" / "a" / "__init__.py").touch()
-        (Path(self.tempdir) / "good" / "a" / "b" / "__init__.py").touch()
-        (Path(self.tempdir) / "good" / "a" / "b" / "c" / "__init__.py").touch()
-        (Path(self.tempdir) / "good" / "a" / "b" / "c" / "test_typical.py").touch()
+        (self.tempdir / "good" / "a" / "b" / "c").mkdir(parents=True)
+        (self.tempdir / "good" / "__init__.py").touch()
+        (self.tempdir / "good" / "a" / "__init__.py").touch()
+        (self.tempdir / "good" / "a" / "b" / "__init__.py").touch()
+        (self.tempdir / "good" / "a" / "b" / "c" / "__init__.py").touch()
+        (self.tempdir / "good" / "a" / "b" / "c" / "test_typical.py").touch()
 
         # missingmid/a/b/c/test_missingmid.py
-        os.makedirs(
-            os.path.join(self.tempdir, "missingmid", "a", "b", "c"), 0o755
-        )
-        (Path(self.tempdir) / "missingmid" / "__init__.py").touch()
+        (self.tempdir / "missingmid" / "a" / "b" / "c").mkdir(parents=True)
+        (self.tempdir / "missingmid" / "__init__.py").touch()
         # no missingmid/a/__init__.py
-        (Path(self.tempdir) / "missingmid" / "a" / "b" / "__init__.py").touch()
-        (Path(self.tempdir) / "missingmid" / "a" / "b" / "c" / "__init__.py").touch()
-        (Path(self.tempdir) / "missingmid" / "a" / "b" / "c" / "test_missingmid.py").touch()
+        (self.tempdir / "missingmid" / "a" / "b" / "__init__.py").touch()
+        (self.tempdir / "missingmid" / "a" / "b" / "c" / "__init__.py").touch()
+        (self.tempdir / "missingmid" / "a" / "b" / "c" / "test_missingmid.py").touch()
 
         # syms/a/bsym/c/test_typical.py
-        os.makedirs(os.path.join(self.tempdir, "syms", "a"), 0o755)
-        (Path(self.tempdir) / "syms" / "__init__.py").touch()
-        (Path(self.tempdir) / "syms" / "a" / "__init__.py").touch()
+        (self.tempdir / "syms" / "a").mkdir(parents=True)
+        (self.tempdir / "syms" / "__init__.py").touch()
+        (self.tempdir / "syms" / "a" / "__init__.py").touch()
         os.symlink(
-            os.path.join(self.tempdir, "good", "a", "b"),
-            os.path.join(self.tempdir, "syms", "a", "bsym"),
+            self.tempdir / "good" / "a" / "b",
+            self.tempdir / "syms" / "a" / "bsym",
         )
 
     def test_get_module_qualname_from_path_rel_typical(self):
