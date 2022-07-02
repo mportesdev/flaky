@@ -26,7 +26,16 @@ class UtilTests(testtools.TestCase):
 
         self.tempdir = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.tempdir)
-        self.reltempdir = os.path.relpath(self.tempdir)
+        self.reltempdir = Path(os.path.relpath(self.tempdir))
+        reltempdir_resolved = self.reltempdir.resolve()
+        self.assertEqual(
+            self.tempdir,
+            reltempdir_resolved,
+            f'self.tempdir: {self.tempdir}\n'
+            f'self.reltempdir: {self.reltempdir}\n'
+            f'reltempdir_resolved: {reltempdir_resolved}\n'
+            'self.tempdir not equal to reltempdir_resolved'
+        )
 
         # good/a/b/c/test_typical.py
         (self.tempdir / "good" / "a" / "b" / "c").mkdir(parents=True)
@@ -56,17 +65,15 @@ class UtilTests(testtools.TestCase):
     def test_get_module_qualname_from_path_rel_typical(self):
         """Test get_module_qualname_from_path with typical relative paths."""
         for path in (
-            os.path.join(self.reltempdir, "good", "__init__.py"),
-            os.path.join(self.reltempdir, "good", "a", "__init__.py"),
-            os.path.join(self.reltempdir, "good", "a", "b", "__init__.py"),
-            os.path.join(self.reltempdir, "good", "a", "b", "c", "__init__.py"),
+            self.reltempdir / "good" / "__init__.py",
+            self.reltempdir / "good" / "a" / "__init__.py",
+            self.reltempdir / "good" / "a" / "b" / "__init__.py",
+            self.reltempdir / "good" / "a" / "b" / "c" / "__init__.py",
         ):
-            self.assertTrue(os.path.exists(path), path)
+            self.assertTrue(path.exists(), path)
 
         name = b_utils.get_module_qualname_from_path(
-            os.path.join(
-                self.reltempdir, "good", "a", "b", "c", "test_typical.py"
-            )
+            self.reltempdir / "good" / "a" / "b" / "c" / "test_typical.py"
         )
         self.assertEqual("good.a.b.c.test_typical", name)
 
@@ -74,36 +81,27 @@ class UtilTests(testtools.TestCase):
         # Test get_module_qualname_from_path with module __init__.py
         # missing and relative paths
         for path in (
-            os.path.join(self.reltempdir, "missingmid", "a", "b", "__init__.py"),
-            os.path.join(self.reltempdir, "missingmid", "a", "b", "c", "__init__.py"),
+            self.reltempdir / "missingmid" / "a" / "b" / "__init__.py",
+            self.reltempdir / "missingmid" / "a" / "b" / "c" / "__init__.py",
         ):
-            self.assertTrue(os.path.exists(path), path)
+            self.assertTrue(path.exists(), path)
 
         name = b_utils.get_module_qualname_from_path(
-            os.path.join(
-                self.reltempdir,
-                "missingmid",
-                "a",
-                "b",
-                "c",
-                "test_missingmid.py",
-            )
+            self.reltempdir / "missingmid" / "a" / "b" / "c" / "test_missingmid.py"
         )
         self.assertEqual("b.c.test_missingmid", name)
 
     def test_get_module_qualname_from_path_rel_syms(self):
         """Test get_module_qualname_from_path with symbolic relative paths."""
         for path in (
-            os.path.join(self.reltempdir, "syms", "__init__.py"),
-            os.path.join(self.reltempdir, "syms", "a", "__init__.py"),
-            os.path.join(self.reltempdir, "syms", "a", "bsym", "__init__.py"),
-            os.path.join(self.reltempdir, "syms", "a", "bsym", "c", "__init__.py"),
+            self.reltempdir / "syms" / "__init__.py",
+            self.reltempdir / "syms" / "a" / "__init__.py",
+            self.reltempdir / "syms" / "a" / "bsym" / "__init__.py",
+            self.reltempdir / "syms" / "a" / "bsym" / "c" / "__init__.py",
         ):
-            self.assertTrue(os.path.exists(path), path)
+            self.assertTrue(path.exists(), path)
 
         name = b_utils.get_module_qualname_from_path(
-            os.path.join(
-                self.reltempdir, "syms", "a", "bsym", "c", "test_typical.py"
-            )
+            self.reltempdir / "syms" / "a" / "bsym" / "c" / "test_typical.py"
         )
         self.assertEqual("syms.a.bsym.c.test_typical", name)
