@@ -46,15 +46,6 @@ class UtilTests(testtools.TestCase):
         (Path(self.tempdir) / "missingmid" / "a" / "b" / "c" / "__init__.py").touch()
         (Path(self.tempdir) / "missingmid" / "a" / "b" / "c" / "test_missingmid.py").touch()
 
-        # missingend/a/b/c/test_missingend.py
-        os.makedirs(
-            os.path.join(self.tempdir, "missingend", "a", "b", "c"), 0o755
-        )
-        (Path(self.tempdir) / "missingend" / "__init__.py").touch()
-        (Path(self.tempdir) / "missingend" / "a" / "b" / "__init__.py").touch()
-        # no missingend/a/b/c/__init__.py
-        (Path(self.tempdir) / "missingend" / "a" / "b" / "c" / "test_missingend.py").touch()
-
         # syms/a/bsym/c/test_typical.py
         os.makedirs(os.path.join(self.tempdir, "syms", "a"), 0o755)
         (Path(self.tempdir) / "syms" / "__init__.py").touch()
@@ -63,57 +54,6 @@ class UtilTests(testtools.TestCase):
             os.path.join(self.tempdir, "good", "a", "b"),
             os.path.join(self.tempdir, "syms", "a", "bsym"),
         )
-
-    def test_get_module_qualname_from_path_abs_typical(self):
-        """Test get_module_qualname_from_path with typical absolute paths."""
-
-        name = b_utils.get_module_qualname_from_path(
-            os.path.join(
-                self.tempdir, "good", "a", "b", "c", "test_typical.py"
-            )
-        )
-        self.assertEqual("good.a.b.c.test_typical", name)
-
-    def test_get_module_qualname_from_path_with_dot(self):
-        """Test get_module_qualname_from_path with a "." ."""
-
-        name = b_utils.get_module_qualname_from_path(
-            os.path.join(".", "__init__.py")
-        )
-
-        self.assertEqual("__init__", name)
-
-    def test_get_module_qualname_from_path_abs_missingmid(self):
-        # Test get_module_qualname_from_path with missing module
-        # __init__.py
-
-        name = b_utils.get_module_qualname_from_path(
-            os.path.join(
-                self.tempdir, "missingmid", "a", "b", "c", "test_missingmid.py"
-            )
-        )
-        self.assertEqual("b.c.test_missingmid", name)
-
-    def test_get_module_qualname_from_path_abs_missingend(self):
-        # Test get_module_qualname_from_path with no __init__.py
-        # last dir'''
-
-        name = b_utils.get_module_qualname_from_path(
-            os.path.join(
-                self.tempdir, "missingend", "a", "b", "c", "test_missingend.py"
-            )
-        )
-        self.assertEqual("test_missingend", name)
-
-    def test_get_module_qualname_from_path_abs_syms(self):
-        """Test get_module_qualname_from_path with symlink in path."""
-
-        name = b_utils.get_module_qualname_from_path(
-            os.path.join(
-                self.tempdir, "syms", "a", "bsym", "c", "test_typical.py"
-            )
-        )
-        self.assertEqual("syms.a.bsym.c.test_typical", name)
 
     def test_get_module_qualname_from_path_rel_typical(self):
         """Test get_module_qualname_from_path with typical relative paths."""
@@ -153,22 +93,6 @@ class UtilTests(testtools.TestCase):
         )
         self.assertEqual("b.c.test_missingmid", name)
 
-    def test_get_module_qualname_from_path_rel_missingend(self):
-        # Test get_module_qualname_from_path with __init__.py missing from
-        # last dir and using relative paths
-
-        name = b_utils.get_module_qualname_from_path(
-            os.path.join(
-                self.reltempdir,
-                "missingend",
-                "a",
-                "b",
-                "c",
-                "test_missingend.py",
-            )
-        )
-        self.assertEqual("test_missingend", name)
-
     def test_get_module_qualname_from_path_rel_syms(self):
         """Test get_module_qualname_from_path with symbolic relative paths."""
         for path in (
@@ -185,28 +109,3 @@ class UtilTests(testtools.TestCase):
             )
         )
         self.assertEqual("syms.a.bsym.c.test_typical", name)
-
-    def test_get_module_qualname_from_path_sys(self):
-        """Test get_module_qualname_from_path with system module paths."""
-
-        name = b_utils.get_module_qualname_from_path(os.__file__)
-        self.assertEqual("os", name)
-
-        # This will fail because of magic for os.path. Not sure how to fix.
-        # name = b_utils.get_module_qualname_from_path(os.path.__file__)
-        # self.assertEqual(name, 'os.path')
-
-    def test_get_module_qualname_from_path_invalid_path(self):
-        """Test get_module_qualname_from_path with invalid path."""
-
-        name = b_utils.get_module_qualname_from_path("/a/b/c/d/e.py")
-        self.assertEqual("e", name)
-
-    def test_get_module_qualname_from_path_dir(self):
-        """Test get_module_qualname_from_path with dir path."""
-
-        self.assertRaises(
-            b_utils.InvalidModulePath,
-            b_utils.get_module_qualname_from_path,
-            "/tmp/",
-        )
