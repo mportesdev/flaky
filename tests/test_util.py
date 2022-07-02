@@ -8,11 +8,6 @@ import testtools
 from bandit.core import utils as b_utils
 
 
-def _touch(path):
-    """Create an empty file at ``path``."""
-    Path(path).touch()
-
-
 class UtilTests(testtools.TestCase):
     """This set of tests exercises bandit.core.util functions."""
 
@@ -35,57 +30,35 @@ class UtilTests(testtools.TestCase):
 
         # good/a/b/c/test_typical.py
         os.makedirs(os.path.join(self.tempdir, "good", "a", "b", "c"), 0o755)
-        _touch(os.path.join(self.tempdir, "good", "__init__.py"))
-        _touch(os.path.join(self.tempdir, "good", "a", "__init__.py"))
-        _touch(os.path.join(self.tempdir, "good", "a", "b", "__init__.py"))
-        _touch(
-            os.path.join(self.tempdir, "good", "a", "b", "c", "__init__.py")
-        )
-        _touch(
-            os.path.join(
-                self.tempdir, "good", "a", "b", "c", "test_typical.py"
-            )
-        )
+        (Path(self.tempdir) / "good" / "__init__.py").touch()
+        (Path(self.tempdir) / "good" / "a" / "__init__.py").touch()
+        (Path(self.tempdir) / "good" / "a" / "b" / "__init__.py").touch()
+        (Path(self.tempdir) / "good" / "a" / "b" / "c" / "__init__.py").touch()
+        (Path(self.tempdir) / "good" / "a" / "b" / "c" / "test_typical.py").touch()
 
         # missingmid/a/b/c/test_missingmid.py
         os.makedirs(
             os.path.join(self.tempdir, "missingmid", "a", "b", "c"), 0o755
         )
-        _touch(os.path.join(self.tempdir, "missingmid", "__init__.py"))
+        (Path(self.tempdir) / "missingmid" / "__init__.py").touch()
         # no missingmid/a/__init__.py
-        _touch(
-            os.path.join(self.tempdir, "missingmid", "a", "b", "__init__.py")
-        )
-        _touch(
-            os.path.join(
-                self.tempdir, "missingmid", "a", "b", "c", "__init__.py"
-            )
-        )
-        _touch(
-            os.path.join(
-                self.tempdir, "missingmid", "a", "b", "c", "test_missingmid.py"
-            )
-        )
+        (Path(self.tempdir) / "missingmid" / "a" / "b" / "__init__.py").touch()
+        (Path(self.tempdir) / "missingmid" / "a" / "b" / "c" / "__init__.py").touch()
+        (Path(self.tempdir) / "missingmid" / "a" / "b" / "c" / "test_missingmid.py").touch()
 
         # missingend/a/b/c/test_missingend.py
         os.makedirs(
             os.path.join(self.tempdir, "missingend", "a", "b", "c"), 0o755
         )
-        _touch(os.path.join(self.tempdir, "missingend", "__init__.py"))
-        _touch(
-            os.path.join(self.tempdir, "missingend", "a", "b", "__init__.py")
-        )
+        (Path(self.tempdir) / "missingend" / "__init__.py").touch()
+        (Path(self.tempdir) / "missingend" / "a" / "b" / "__init__.py").touch()
         # no missingend/a/b/c/__init__.py
-        _touch(
-            os.path.join(
-                self.tempdir, "missingend", "a", "b", "c", "test_missingend.py"
-            )
-        )
+        (Path(self.tempdir) / "missingend" / "a" / "b" / "c" / "test_missingend.py").touch()
 
         # syms/a/bsym/c/test_typical.py
         os.makedirs(os.path.join(self.tempdir, "syms", "a"), 0o755)
-        _touch(os.path.join(self.tempdir, "syms", "__init__.py"))
-        _touch(os.path.join(self.tempdir, "syms", "a", "__init__.py"))
+        (Path(self.tempdir) / "syms" / "__init__.py").touch()
+        (Path(self.tempdir) / "syms" / "a" / "__init__.py").touch()
         os.symlink(
             os.path.join(self.tempdir, "good", "a", "b"),
             os.path.join(self.tempdir, "syms", "a", "bsym"),
