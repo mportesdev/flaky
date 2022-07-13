@@ -32,6 +32,7 @@ class UtilTests(testtools.TestCase):
             self.tempdir,
             reltempdir_resolved,
             f'self.tempdir: {self.tempdir}\n'
+            f'\ncwd: {Path.cwd()}\n'
             f'self.reltempdir: {self.reltempdir}\n'
             f'reltempdir_resolved: {reltempdir_resolved}\n'
             'self.tempdir not equal to reltempdir_resolved'
