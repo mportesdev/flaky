@@ -22,4 +22,6 @@ jobs:
     - name: Install dependencies, run tests
       run: |
         pip install -r test-requirements.txt
+        file /private
         stestr run
+        cat path_logs.txt

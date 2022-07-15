@@ -28,6 +28,14 @@ class UtilTests(testtools.TestCase):
         self.addCleanup(shutil.rmtree, self.tempdir)
         self.reltempdir = Path(os.path.relpath(self.tempdir))
         reltempdir_resolved = self.reltempdir.resolve()
+        with open('path_logs.txt', 'a') as f:
+            print(
+                f'\ncwd: {Path.cwd()}\n'
+                f'self.tempdir: {self.tempdir}\n'
+                f'self.reltempdir: {self.reltempdir}\n'
+                f'reltempdir_resolved: {reltempdir_resolved}\n\n',
+                file=f
+            )
         self.assertTrue(
             self.tempdir.exists() and self.reltempdir.exists() and reltempdir_resolved.exists(),
             f'self.tempdir exists: {self.tempdir.exists()}\n'
