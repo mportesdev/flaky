@@ -28,14 +28,11 @@ class UtilTests(testtools.TestCase):
         self.addCleanup(shutil.rmtree, self.tempdir)
         self.reltempdir = Path(os.path.relpath(self.tempdir))
         reltempdir_resolved = self.reltempdir.resolve()
-        self.assertEqual(
-            self.tempdir,
-            reltempdir_resolved,
-            f'self.tempdir: {self.tempdir}\n'
-            f'\ncwd: {Path.cwd()}\n'
-            f'self.reltempdir: {self.reltempdir}\n'
-            f'reltempdir_resolved: {reltempdir_resolved}\n'
-            'self.tempdir not equal to reltempdir_resolved'
+        self.assertTrue(
+            self.tempdir.exists() and self.reltempdir.exists() and reltempdir_resolved.exists(),
+            f'self.tempdir exists: {self.tempdir.exists()}\n'
+            f'self.reltempdir exists: {self.reltempdir.exists()}\n'
+            f'reltempdir_resolved exists: {reltempdir_resolved.exists()}\n'
         )
 
         # good/a/b/c/test_typical.py
